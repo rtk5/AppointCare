@@ -1,1 +1,61 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reschedule — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-title">Reschedule Appointment</div></div>
+    <div class="page-body">
+      <div class="breadcrumb">
+        <a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span>
+        <a th:href="@{/patient/appointments}">Appointments</a><span>›</span>
+        Reschedule
+      </div>
+      <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+      <div class="card" style="max-width:700px;">
+        <div class="card-header">
+          <h3>Choose a New Slot</h3>
+          <span class="text-muted" style="font-size:0.85rem;">
+            Current: <span th:text="${appointment.date}"></span> at <span th:text="${appointment.time}"></span>
+          </span>
+        </div>
+        <div class="card-body">
+          <div th:if="${#lists.isEmpty(slots)}" class="empty-state">
+            <div class="icon">📭</div>
+            <p>No other slots available right now.</p>
+          </div>
+          <form th:action="@{/patient/appointments/{id}/reschedule(id=${appointment.appointmentId})}"
+                method="post" th:if="${!#lists.isEmpty(slots)}">
+            <input type="hidden" name="scheduleId" id="scheduleIdInput" value=""/>
+            <p class="text-muted mb-2">Click a new slot to select it.</p>
+            <div class="slot-grid">
+              <div th:each="slot : ${slots}"
+                   class="slot-item"
+                   th:onclick="'selectSlot(this,' + ${slot.scheduleId} + ')'">
+                <div class="slot-date" th:text="${slot.availableDate}">Date</div>
+                <div class="slot-time" th:text="${slot.availableTime}">Time</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+              <button type="submit" class="btn btn-primary btn-lg"
+                      onclick="if(!document.getElementById('scheduleIdInput').value){alert('Select a slot first.');return false;}">
+                Confirm Reschedule
+              </button>
+              <a th:href="@{/patient/appointments}" class="btn btn-outline btn-lg">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
