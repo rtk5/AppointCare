@@ -1,1 +1,102 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Appointment — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Book Appointment</div>
+    </div>
+
+    <div class="page-body">
+      <div class="breadcrumb">
+        <a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span>
+        <a th:href="@{/patient/doctors}">Find Doctors</a><span>›</span>
+        Book Appointment
+      </div>
+
+      <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:1.5rem;">
+
+        <!-- Doctor Info Card -->
+        <div>
+          <div class="card">
+            <div class="card-body" style="text-align:center;">
+              <div class="doc-avatar" style="width:70px;height:70px;font-size:1.6rem;margin:0 auto 1rem;"
+                   th:text="${#strings.substring(doctor.name,0,1).toUpperCase()}">D</div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--teal-dark);"
+                   th:text="${doctor.name}">Dr. Name</div>
+              <div style="color:var(--accent);font-size:0.8rem;font-weight:700;text-transform:uppercase;margin-bottom:1rem;"
+                   th:text="${doctor.specialization}">Spec</div>
+              <div class="doc-info" style="text-align:left;margin-bottom:0.4rem;">🏥 <span th:text="${doctor.hospital}"></span></div>
+              <div class="doc-info" style="text-align:left;margin-bottom:0.4rem;">🎓 <span th:text="${doctor.qualification}"></span></div>
+              <div class="doc-info" style="text-align:left;margin-bottom:0.4rem;">📞 <span th:text="${doctor.phone}"></span></div>
+              <div style="margin-top:1rem;padding:0.75rem;background:var(--teal-light);border-radius:var(--radius-sm);text-align:center;">
+                <div style="font-size:0.75rem;color:var(--text-mid);">Consultation Fee</div>
+                <div style="font-size:1.4rem;font-weight:700;color:var(--teal);">₹<span th:text="${doctor.consultationFee}"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div>
+          <div class="card">
+            <div class="card-header"><h3>Select a Time Slot</h3></div>
+            <div class="card-body">
+
+              <div th:if="${#lists.isEmpty(slots)}" class="empty-state" style="padding:2rem 1rem;">
+                <div class="icon">📭</div>
+                <p>No available slots for this doctor right now. Please check back later.</p>
+              </div>
+
+              <form th:action="@{/patient/book}" method="post" th:if="${!#lists.isEmpty(slots)}">
+                <input type="hidden" name="doctorId" th:value="${doctor.userId}"/>
+                <input type="hidden" name="scheduleId" id="scheduleIdInput" value=""/>
+
+                <p style="font-size:0.875rem;color:var(--text-mid);margin-bottom:1rem;">
+                  Click a slot to select it, then fill in your reason below.
+                </p>
+
+                <div class="slot-grid">
+                  <div th:each="slot : ${slots}"
+                       class="slot-item"
+                       th:onclick="'selectSlot(this, ' + ${slot.scheduleId} + ')'">
+                    <div class="slot-date" th:text="${slot.availableDate}">Date</div>
+                    <div class="slot-time" th:text="${slot.availableTime}">Time</div>
+                  </div>
+                </div>
+
+                <div class="form-group mt-3">
+                  <label>Reason for Visit</label>
+                  <textarea name="reason" class="form-control" rows="3"
+                            placeholder="Briefly describe your symptoms or reason for the visit…" required
+                            style="resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:flex;gap:1rem;margin-top:1rem;">
+                  <button type="submit" class="btn btn-primary btn-lg"
+                          onclick="if(!document.getElementById('scheduleIdInput').value){alert('Please select a time slot.');return false;}">
+                    Confirm Booking →
+                  </button>
+                  <a th:href="@{/patient/doctors}" class="btn btn-outline btn-lg">Cancel</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
