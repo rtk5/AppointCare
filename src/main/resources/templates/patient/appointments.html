@@ -1,1 +1,95 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Appointments — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">My Appointments</div>
+      <div class="topbar-actions">
+        <a th:href="@{/patient/doctors}" class="btn btn-primary btn-sm">+ New Appointment</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="breadcrumb">
+        <a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span> My Appointments
+      </div>
+
+      <div th:if="${success}" class="alert alert-success">✓ <span th:text="${success}"></span></div>
+      <div th:if="${error}"   class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+
+      <div th:if="${#lists.isEmpty(appointments)}" class="empty-state">
+        <div class="icon">📭</div>
+        <p>You have no appointments. <a th:href="@{/patient/doctors}">Book one now!</a></p>
+      </div>
+
+      <div class="card" th:if="${!#lists.isEmpty(appointments)}">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="a : ${appointments}">
+                <td th:text="${a.appointmentId}">#</td>
+                <td>
+                  <div style="font-weight:600;" th:text="${a.doctor.name}">Doctor</div>
+                  <div style="font-size:0.78rem;color:var(--text-light);" th:text="${a.doctor.hospital}">Hospital</div>
+                </td>
+                <td th:text="${a.doctor.specialization}">Spec</td>
+                <td th:text="${a.date}">Date</td>
+                <td th:text="${a.time}">Time</td>
+                <td style="max-width:160px;font-size:0.85rem;" th:text="${a.reason}">Reason</td>
+                <td>
+                  <span th:class="'badge badge-' + ${a.status.name().toLowerCase()}"
+                        th:text="${a.status}">Status</span>
+                </td>
+                <td>
+                  <div class="actions-group">
+                    <!-- Pay button - show only if approved and no payment -->
+                    <a th:if="${a.status.name() == 'APPROVED'}"
+                       th:href="@{/patient/appointments/{id}/pay(id=${a.appointmentId})}"
+                       class="btn btn-success btn-sm">💳 Pay</a>
+
+                    <!-- Reschedule - pending only -->
+                    <a th:if="${a.status.name() == 'PENDING'}"
+                       th:href="@{/patient/appointments/{id}/reschedule(id=${a.appointmentId})}"
+                       class="btn btn-warning btn-sm">📆 Reschedule</a>
+
+                    <!-- Cancel - pending or approved -->
+                    <form th:if="${a.status.name() == 'PENDING' or a.status.name() == 'APPROVED'}"
+                          th:action="@{/patient/appointments/{id}/cancel(id=${a.appointmentId})}"
+                          method="post" style="display:inline;">
+                      <button type="submit" class="btn btn-danger btn-sm"
+                              data-confirm="Cancel this appointment?">✕ Cancel</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
