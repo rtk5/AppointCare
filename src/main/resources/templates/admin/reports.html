@@ -1,1 +1,106 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Reports — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar-admin}"></div>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-title">System Reports</div></div>
+    <div class="page-body">
+      <div class="breadcrumb"><a th:href="@{/admin/dashboard}">Dashboard</a><span>›</span> Reports</div>
+
+      <!-- Appointment Stats -->
+      <div class="stats-grid" style="margin-bottom:2rem;">
+        <div class="stat-card">
+          <div class="stat-icon teal">📅</div>
+          <div class="stat-info"><div class="label">Total</div><div class="value" th:text="${totalAppts}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon warning">⏳</div>
+          <div class="stat-info"><div class="label">Pending</div><div class="value" th:text="${pending}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">✅</div>
+          <div class="stat-info"><div class="label">Approved</div><div class="value" th:text="${approved}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon danger">✕</div>
+          <div class="stat-info"><div class="label">Rejected</div><div class="value" th:text="${rejected}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon accent">🚫</div>
+          <div class="stat-info"><div class="label">Cancelled</div><div class="value" th:text="${cancelled}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal">🏁</div>
+          <div class="stat-info"><div class="label">Completed</div><div class="value" th:text="${completed}">0</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+
+        <!-- Revenue -->
+        <div class="card">
+          <div class="card-header"><h3>Revenue Report</h3></div>
+          <div class="card-body">
+            <div style="background:var(--teal-light);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;margin-bottom:1.25rem;">
+              <div style="font-size:0.8rem;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.05em;">Total Revenue Collected</div>
+              <div style="font-size:2.5rem;font-weight:700;color:var(--teal);font-family:'Playfair Display',serif;">
+                ₹<span th:text="${#numbers.formatDecimal(revenue,1,2)}">0.00</span>
+              </div>
+            </div>
+            <div th:if="${#lists.isEmpty(payments)}" class="text-muted" style="text-align:center;">No payments recorded.</div>
+            <div class="table-wrap" th:if="${!#lists.isEmpty(payments)}">
+              <table>
+                <thead><tr><th>Appt #</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr th:each="p : ${payments}">
+                    <td th:text="${p.appointment.appointmentId}">#</td>
+                    <td th:text="'₹' + ${p.amount}">Amount</td>
+                    <td th:text="${p.paymentMethod}">Method</td>
+                    <td>
+                      <span class="badge"
+                            th:classappend="${p.status.name() == 'COMPLETED' ? 'badge-approved' : 'badge-pending'}"
+                            th:text="${p.status}">Status</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doctors Performance -->
+        <div class="card">
+          <div class="card-header"><h3>Doctor Overview</h3></div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Doctor</th><th>Specialization</th><th>Fee (₹)</th><th>Hospital</th></tr></thead>
+                <tbody>
+                  <tr th:each="doc : ${doctors}">
+                    <td>
+                      <div style="font-weight:600;" th:text="${doc.name}">Name</div>
+                      <div style="font-size:0.75rem;color:var(--text-light);" th:text="${doc.qualification}">Qual</div>
+                    </td>
+                    <td th:text="${doc.specialization}">Spec</td>
+                    <td th:text="${doc.consultationFee}">Fee</td>
+                    <td th:text="${doc.hospital}">Hospital</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
