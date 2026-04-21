@@ -1,1 +1,92 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Make Payment</div>
+    </div>
+
+    <div class="page-body">
+      <div class="breadcrumb">
+        <a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span>
+        <a th:href="@{/patient/appointments}">Appointments</a><span>›</span>
+        Payment
+      </div>
+
+      <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+
+      <div style="max-width:520px;margin:0 auto;">
+        <div class="card">
+          <div class="card-header"><h3>Payment Summary</h3></div>
+          <div class="card-body">
+
+            <!-- Appointment Summary -->
+            <div style="background:var(--teal-light);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-bottom:1.5rem;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+                <span class="text-muted">Doctor</span>
+                <strong th:text="${appointment.doctor.name}">Dr. Name</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+                <span class="text-muted">Specialization</span>
+                <span th:text="${appointment.doctor.specialization}">Spec</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+                <span class="text-muted">Date &amp; Time</span>
+                <span th:text="${appointment.date} + ' at ' + ${appointment.time}">Date</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:0.75rem;margin-top:0.75rem;">
+                <span style="font-weight:700;color:var(--teal-dark);">Total Amount</span>
+                <span style="font-size:1.3rem;font-weight:700;color:var(--teal);">
+                  ₹<span th:text="${appointment.doctor.consultationFee}">500</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Payment Method -->
+            <form th:action="@{/patient/appointments/{id}/pay(id=${appointment.appointmentId})}" method="post">
+              <p style="font-weight:600;font-size:0.85rem;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:1rem;">
+                Select Payment Method
+              </p>
+              <div class="payment-methods">
+                <label class="payment-method selected">
+                  <input type="radio" name="method" value="UPI" checked/>
+                  <span class="pm-icon">📱</span>
+                  <span class="pm-label">UPI</span>
+                </label>
+                <label class="payment-method">
+                  <input type="radio" name="method" value="CARD"/>
+                  <span class="pm-icon">💳</span>
+                  <span class="pm-label">Card</span>
+                </label>
+                <label class="payment-method">
+                  <input type="radio" name="method" value="CASH"/>
+                  <span class="pm-icon">💵</span>
+                  <span class="pm-label">Cash</span>
+                </label>
+              </div>
+
+              <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+                <button type="submit" class="btn btn-success btn-lg" style="flex:1;">
+                  ✓ Confirm Payment
+                </button>
+                <a th:href="@{/patient/appointments}" class="btn btn-outline btn-lg">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,1 +1,78 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Doctors — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Find Doctors</div>
+      <div class="topbar-actions">
+        <a th:href="@{/patient/notifications}" class="notif-badge">🔔</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="breadcrumb">
+        <a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span> Find Doctors
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.75rem;align-items:flex-end;">
+        <form th:action="@{/patient/doctors}" method="get" style="display:flex;gap:0.75rem;flex:1;">
+          <input type="text" name="query" class="form-control"
+                 th:value="${query}" placeholder="Search by name, specialization, hospital…"
+                 style="max-width:380px;"/>
+          <button type="submit" class="btn btn-primary">🔍 Search</button>
+          <a th:href="@{/patient/doctors}" class="btn btn-outline">Clear</a>
+        </form>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <label style="font-size:0.8rem;font-weight:600;color:var(--text-mid);">Filter:</label>
+          <select id="specFilter" class="form-control" style="width:180px;">
+            <option value="">All Specializations</option>
+            <option>Cardiology</option>
+            <option>Neurology</option>
+            <option>Dermatology</option>
+            <option>Orthopedics</option>
+            <option>Pediatrics</option>
+            <option>Ophthalmology</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Results count -->
+      <p class="text-muted mb-2" th:text="'Showing ' + ${#lists.size(doctors)} + ' doctor(s)'"></p>
+
+      <!-- Doctor Cards -->
+      <div th:if="${#lists.isEmpty(doctors)}" class="empty-state">
+        <div class="icon">🔍</div>
+        <p>No doctors found matching "<span th:text="${query}"></span>"</p>
+      </div>
+
+      <div class="doctor-grid" th:if="${!#lists.isEmpty(doctors)}">
+        <div th:each="doc : ${doctors}"
+             class="doctor-card"
+             th:data-spec="${doc.specialization}">
+          <div class="doc-avatar" th:text="${#strings.substring(doc.name,0,1).toUpperCase()}">D</div>
+          <div class="doc-name"   th:text="${doc.name}">Dr. Name</div>
+          <div class="doc-spec"   th:text="${doc.specialization}">Specialization</div>
+          <div class="doc-info">🏥 <span th:text="${doc.hospital}">Hospital</span></div>
+          <div class="doc-info">🎓 <span th:text="${doc.qualification}">Qualification</span></div>
+          <div class="doc-fee">₹<span th:text="${doc.consultationFee}">500</span> / visit</div>
+          <a th:href="@{/patient/book/{id}(id=${doc.userId})}" class="btn btn-primary btn-block btn-sm">
+            Book Appointment
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

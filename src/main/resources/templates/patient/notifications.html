@@ -1,1 +1,39 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notifications — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-title">Notifications</div></div>
+    <div class="page-body">
+      <div class="breadcrumb"><a th:href="@{/patient/dashboard}">Dashboard</a><span>›</span> Notifications</div>
+      <div class="section-header">
+        <h2>All Notifications</h2>
+      </div>
+      <div th:if="${#lists.isEmpty(notifications)}" class="empty-state">
+        <div class="icon">🔔</div>
+        <p>No notifications yet.</p>
+      </div>
+      <div class="notif-list" th:if="${!#lists.isEmpty(notifications)}">
+        <div th:each="n : ${notifications}"
+             class="notif-item"
+             th:classappend="${!n.read ? 'unread' : ''}">
+          <div class="notif-icon">📬</div>
+          <div>
+            <div class="notif-msg" th:text="${n.message}">Message</div>
+            <div class="notif-date" th:text="${n.date}">Date</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

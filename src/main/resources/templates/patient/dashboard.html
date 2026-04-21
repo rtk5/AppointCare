@@ -1,1 +1,120 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Dashboard — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <a th:href="@{/patient/notifications}" class="notif-badge">
+          🔔
+          <span class="badge" th:if="${unread > 0}" th:text="${unread}"></span>
+        </a>
+        <a th:href="@{/patient/doctors}" class="btn btn-primary btn-sm">+ Book Appointment</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div th:if="${success}" class="alert alert-success">✓ <span th:text="${success}"></span></div>
+      <div th:if="${error}"   class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+
+      <p style="color:var(--text-mid);margin-bottom:1.5rem;">
+        Welcome back, <strong th:text="${patient.name}">Patient</strong>! Here's your health summary.
+      </p>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon teal">📅</div>
+          <div class="stat-info">
+            <div class="label">Total Appointments</div>
+            <div class="value" th:text="${total}">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon warning">⏳</div>
+          <div class="stat-info">
+            <div class="label">Pending</div>
+            <div class="value" th:text="${pending}">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">✅</div>
+          <div class="stat-info">
+            <div class="label">Approved</div>
+            <div class="value" th:text="${approved}">0</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon accent">🔔</div>
+          <div class="stat-info">
+            <div class="label">Unread Alerts</div>
+            <div class="value" th:text="${unread}">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Appointments -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Appointments</h3>
+          <a th:href="@{/patient/appointments}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div th:if="${#lists.isEmpty(appointments)}" class="empty-state">
+            <div class="icon">📭</div>
+            <p>No appointments yet. <a th:href="@{/patient/doctors}">Book your first one!</a></p>
+          </div>
+          <div class="table-wrap" th:if="${!#lists.isEmpty(appointments)}">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Doctor</th>
+                  <th>Specialization</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="a : ${appointments}">
+                  <td th:text="${a.appointmentId}">#</td>
+                  <td th:text="${a.doctor.name}">Doctor</td>
+                  <td th:text="${a.doctor.specialization}">Spec</td>
+                  <td th:text="${a.date}">Date</td>
+                  <td th:text="${a.time}">Time</td>
+                  <td>
+                    <span th:class="'badge badge-' + ${a.status.name().toLowerCase()}"
+                          th:text="${a.status}">Status</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card mt-3">
+        <div class="card-header"><h3>Quick Actions</h3></div>
+        <div class="card-body" style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <a th:href="@{/patient/doctors}"       class="btn btn-primary">🩺 Find a Doctor</a>
+          <a th:href="@{/patient/appointments}"  class="btn btn-outline">📅 My Appointments</a>
+          <a th:href="@{/patient/notifications}" class="btn btn-outline">🔔 Notifications</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

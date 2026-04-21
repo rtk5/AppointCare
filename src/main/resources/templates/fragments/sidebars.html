@@ -1,1 +1,148 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ══════════════════════════════════════════════════════════
+     FRAGMENT: Patient Sidebar
+     Usage: th:replace="~{fragments/sidebar-patient :: sidebar}"
+     ══════════════════════════════════════════════════════════ -->
+<aside th:fragment="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Appoint<span>Care</span></div>
+    <div class="logo-sub">Patient Portal</div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="avatar" th:text="${patient != null ? #strings.substring(patient.name, 0, 1).toUpperCase() : 'P'}">P</div>
+    <div class="user-info">
+      <div class="name" th:text="${patient != null ? patient.name : 'Patient'}">Patient</div>
+      <div class="role">Patient</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a th:href="@{/patient/dashboard}"
+       th:classappend="${#strings.contains(currentUri,'dashboard') ? 'active' : ''}"
+       class="nav-item">
+      <span class="icon">🏠</span> Dashboard
+    </a>
+    <a th:href="@{/patient/doctors}"
+       th:classappend="${#strings.contains(currentUri,'doctors') ? 'active' : ''}"
+       class="nav-item">
+      <span class="icon">🩺</span> Find Doctors
+    </a>
+    <a th:href="@{/patient/appointments}"
+       th:classappend="${#strings.contains(currentUri,'appointments') ? 'active' : ''}"
+       class="nav-item">
+      <span class="icon">📅</span> My Appointments
+    </a>
+
+    <div class="nav-section">Account</div>
+    <a th:href="@{/patient/notifications}"
+       th:classappend="${#strings.contains(currentUri,'notifications') ? 'active' : ''}"
+       class="nav-item">
+      <span class="icon">🔔</span> Notifications
+    </a>
+    <a th:href="@{/patient/profile}"
+       th:classappend="${#strings.contains(currentUri,'profile') ? 'active' : ''}"
+       class="nav-item">
+      <span class="icon">👤</span> Profile
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <form th:action="@{/logout}" method="post">
+      <button class="btn btn-outline w-full" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.3);">
+        🚪 Sign Out
+      </button>
+    </form>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════
+     FRAGMENT: Doctor Sidebar
+     ══════════════════════════════════════════════════════════ -->
+<aside th:fragment="sidebar-doctor" class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Appoint<span>Care</span></div>
+    <div class="logo-sub">Doctor Portal</div>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar" th:text="${doctor != null ? #strings.substring(doctor.name, 0, 1).toUpperCase() : 'D'}">D</div>
+    <div class="user-info">
+      <div class="name" th:text="${doctor != null ? doctor.name : 'Doctor'}">Doctor</div>
+      <div class="role" th:text="${doctor != null ? doctor.specialization : 'Specialist'}">Specialist</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <a th:href="@{/doctor/dashboard}" class="nav-item" th:classappend="${#strings.contains(currentUri,'dashboard') ? 'active' : ''}">
+      <span class="icon">🏠</span> Dashboard
+    </a>
+    <a th:href="@{/doctor/appointments}" class="nav-item" th:classappend="${#strings.contains(currentUri,'appointments') ? 'active' : ''}">
+      <span class="icon">📅</span> Appointments
+    </a>
+    <a th:href="@{/doctor/schedule}" class="nav-item" th:classappend="${#strings.contains(currentUri,'schedule') ? 'active' : ''}">
+      <span class="icon">🗓️</span> My Schedule
+    </a>
+    <div class="nav-section">Account</div>
+    <a th:href="@{/doctor/notifications}" class="nav-item" th:classappend="${#strings.contains(currentUri,'notifications') ? 'active' : ''}">
+      <span class="icon">🔔</span> Notifications
+    </a>
+    <a th:href="@{/doctor/profile}" class="nav-item" th:classappend="${#strings.contains(currentUri,'profile') ? 'active' : ''}">
+      <span class="icon">👤</span> Profile
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <form th:action="@{/logout}" method="post">
+      <button class="btn w-full" style="color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.3);background:transparent;">
+        🚪 Sign Out
+      </button>
+    </form>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════
+     FRAGMENT: Admin Sidebar
+     ══════════════════════════════════════════════════════════ -->
+<aside th:fragment="sidebar-admin" class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">Appoint<span>Care</span></div>
+    <div class="logo-sub">Admin Panel</div>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar" th:text="${admin != null ? #strings.substring(admin.name, 0, 1).toUpperCase() : 'A'}">A</div>
+    <div class="user-info">
+      <div class="name" th:text="${admin != null ? admin.name : 'Admin'}">Admin</div>
+      <div class="role">Administrator</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Management</div>
+    <a th:href="@{/admin/dashboard}" class="nav-item" th:classappend="${#strings.contains(currentUri,'dashboard') ? 'active' : ''}">
+      <span class="icon">🏠</span> Dashboard
+    </a>
+    <a th:href="@{/admin/doctors}" class="nav-item" th:classappend="${#strings.contains(currentUri,'doctors') ? 'active' : ''}">
+      <span class="icon">🩺</span> Manage Doctors
+    </a>
+    <a th:href="@{/admin/users}" class="nav-item" th:classappend="${#strings.contains(currentUri,'users') ? 'active' : ''}">
+      <span class="icon">👥</span> Manage Users
+    </a>
+    <a th:href="@{/admin/appointments}" class="nav-item" th:classappend="${#strings.contains(currentUri,'appointments') ? 'active' : ''}">
+      <span class="icon">📅</span> All Appointments
+    </a>
+    <a th:href="@{/admin/reports}" class="nav-item" th:classappend="${#strings.contains(currentUri,'reports') ? 'active' : ''}">
+      <span class="icon">📊</span> Reports
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <form th:action="@{/logout}" method="post">
+      <button class="btn w-full" style="color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.3);background:transparent;">
+        🚪 Sign Out
+      </button>
+    </form>
+  </div>
+</aside>
+
+</html>

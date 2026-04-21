@@ -1,1 +1,46 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Profile — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar}"></div>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-title">My Profile</div></div>
+    <div class="page-body">
+      <div th:if="${success}" class="alert alert-success">✓ <span th:text="${success}"></span></div>
+      <div class="card" style="max-width:500px;">
+        <div class="card-header"><h3>Profile Details</h3></div>
+        <div class="card-body">
+          <div style="text-align:center;margin-bottom:1.5rem;">
+            <div class="doc-avatar" style="width:70px;height:70px;font-size:1.6rem;margin:0 auto 0.75rem;background:linear-gradient(135deg,var(--teal),var(--teal-mid));"
+                 th:text="${#strings.substring(user.name,0,1).toUpperCase()}">P</div>
+            <div style="font-family:'Playfair Display',serif;font-size:1.2rem;" th:text="${user.name}">Name</div>
+            <div class="text-muted" th:text="${user.role}">Role</div>
+          </div>
+          <form th:action="@{/patient/profile}" method="post">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" name="name" class="form-control" th:value="${user.name}" required/>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" th:value="${user.email}" disabled/>
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" name="phone" class="form-control" th:value="${user.phone}" required/>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
