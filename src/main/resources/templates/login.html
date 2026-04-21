@@ -1,1 +1,66 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="auth-wrap">
+
+  <!-- Brand Panel -->
+  <div class="auth-panel auth-brand">
+    <div>
+      <div class="brand-logo">Appoint<span>Care</span></div>
+      <p class="brand-tagline">Your health, scheduled simply. Connect with top doctors and manage your appointments online.</p>
+      <ul class="brand-features">
+        <li>Search doctors by specialization</li>
+        <li>Book appointments in seconds</li>
+        <li>Real-time approval notifications</li>
+        <li>Secure online payments</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Form Panel -->
+  <div class="auth-panel" style="background:#f7f9fb;">
+    <div class="auth-form-box">
+      <h2>Welcome back</h2>
+      <p class="sub">Sign in to your AppointCare account</p>
+
+      <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+      <div th:if="${message}" class="alert alert-success">✓ <span th:text="${message}"></span></div>
+      <div th:if="${success}" class="alert alert-success">✓ <span th:text="${success}"></span></div>
+
+      <form th:action="@{/login}" method="post">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="username" class="form-control" placeholder="you@example.com" required autofocus/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:1.25rem;">
+          Sign In →
+        </button>
+      </form>
+
+      <p class="text-muted" style="text-align:center;margin-top:1.5rem;">
+        Don't have an account? <a th:href="@{/register}">Register here</a>
+      </p>
+
+      <hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);"/>
+      <p class="text-muted" style="font-size:0.78rem;text-align:center;">
+        <strong>Demo credentials:</strong><br/>
+        Admin: admin@clinic.com / admin123<br/>
+        Doctor: priya@clinic.com / doctor123<br/>
+        Patient: arjun@example.com / patient123
+      </p>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
