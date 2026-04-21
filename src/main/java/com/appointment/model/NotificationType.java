@@ -1,1 +1,11 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+package com.appointment.model;
+
+public enum NotificationType {
+    APPOINTMENT_BOOKED,
+    APPOINTMENT_APPROVED,
+    APPOINTMENT_REJECTED,
+    APPOINTMENT_CANCELLED,
+    APPOINTMENT_RESCHEDULED,
+    PAYMENT_CONFIRMED,
+    REMINDER
+}
