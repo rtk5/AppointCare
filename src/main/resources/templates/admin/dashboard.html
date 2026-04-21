@@ -1,1 +1,77 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar-admin}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Admin Dashboard</div>
+      <div class="topbar-actions">
+        <a th:href="@{/admin/reports}" class="btn btn-outline btn-sm">📊 Reports</a>
+        <a th:href="@{/admin/doctors}"  class="btn btn-primary btn-sm">+ Add Doctor</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <p style="color:var(--text-mid);margin-bottom:1.5rem;">
+        System overview for <strong th:text="${admin.name}">Admin</strong>
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon teal">🩺</div>
+          <div class="stat-info"><div class="label">Total Doctors</div><div class="value" th:text="${totalDoctors}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon accent">👥</div>
+          <div class="stat-info"><div class="label">Total Patients</div><div class="value" th:text="${totalPatients}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon warning">⏳</div>
+          <div class="stat-info"><div class="label">Pending Appts</div><div class="value" th:text="${pendingAppts}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">💰</div>
+          <div class="stat-info"><div class="label">Revenue (₹)</div><div class="value" th:text="${#numbers.formatDecimal(revenue,1,0)}">0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Appointments</h3>
+          <a th:href="@{/admin/appointments}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div th:if="${#lists.isEmpty(recentAppts)}" class="empty-state">
+            <div class="icon">📭</div><p>No appointments in the system.</p>
+          </div>
+          <div class="table-wrap" th:if="${!#lists.isEmpty(recentAppts)}">
+            <table>
+              <thead><tr><th>#</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr th:each="a : ${recentAppts}">
+                  <td th:text="${a.appointmentId}">#</td>
+                  <td th:text="${a.patient.name}">Patient</td>
+                  <td th:text="${a.doctor.name}">Doctor</td>
+                  <td th:text="${a.date}">Date</td>
+                  <td th:text="${a.time}">Time</td>
+                  <td><span th:class="'badge badge-' + ${a.status.name().toLowerCase()}" th:text="${a.status}"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
