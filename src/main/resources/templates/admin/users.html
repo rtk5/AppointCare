@@ -1,1 +1,54 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Manage Users — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar-admin}"></div>
+  <div class="main-content">
+    <div class="topbar"><div class="topbar-title">Manage Users</div></div>
+    <div class="page-body">
+      <div class="breadcrumb"><a th:href="@{/admin/dashboard}">Dashboard</a><span>›</span> Users</div>
+      <div th:if="${success}" class="alert alert-success">✓ <span th:text="${success}"></span></div>
+      <div th:if="${error}"   class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+      <div class="card">
+        <div class="card-header">
+          <h3>All Users</h3>
+          <span class="text-muted" th:text="${#lists.size(users)} + ' total'"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr th:each="u : ${users}">
+                <td th:text="${u.userId}">#</td>
+                <td th:text="${u.name}">Name</td>
+                <td th:text="${u.email}">Email</td>
+                <td th:text="${u.phone}">Phone</td>
+                <td>
+                  <span class="badge"
+                        th:classappend="${u.role.name() == 'ADMIN' ? 'badge-completed' : (u.role.name() == 'DOCTOR' ? 'badge-approved' : 'badge-pending')}"
+                        th:text="${u.role}">Role</span>
+                </td>
+                <td>
+                  <form th:action="@{/admin/users/{id}/delete(id=${u.userId})}" method="post"
+                        th:if="${u.role.name() != 'ADMIN'}">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            data-confirm="Delete this user permanently?">✕ Delete</button>
+                  </form>
+                  <span th:if="${u.role.name() == 'ADMIN'}" class="text-muted" style="font-size:0.8rem;">Protected</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
