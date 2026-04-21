@@ -1,40 +1,35 @@
 package com.appointment.config;
 
-import com.appointment.dto.RegisterDto;
-import com.appointment.model.*;
-import com.appointment.repository.*;
-import com.appointment.service.UserService;
-import com.appointment.service.ScheduleService;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import com.appointment.model.User;
+import com.appointment.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.List;
 
-@Component
-public class DataSeeder implements CommandLineRunner {
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserService userService;
-    private final ScheduleService scheduleService;
-    private final DoctorRepository doctorRepository;
+    private final UserRepository userRepository;
 
-    public DataSeeder(UserService userService, ScheduleService scheduleService, DoctorRepository doctorRepository) {
-        this.userService = userService;
-        this.scheduleService = scheduleService;
-        this.doctorRepository = doctorRepository;
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
 
     @Override
-    public void run(String... args) {
-        seedAdmin();
-        seedDoctors();
-        seedPatients();
-        seedSchedules();
-    }
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-    private void seedAdmin() {
-        if (!userService.emailExists("admin@clinic.com")) {
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+        );
+    }
+}        if (!userService.emailExists("admin@clinic.com")) {
             RegisterDto dto = new RegisterDto();
             dto.setName("System Admin");
             dto.setEmail("admin@clinic.com");
