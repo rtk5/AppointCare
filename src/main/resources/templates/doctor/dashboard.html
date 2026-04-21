@@ -1,1 +1,98 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doctor Dashboard — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="layout">
+  <div th:replace="~{fragments/sidebars :: sidebar-doctor}"></div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Doctor Dashboard</div>
+      <div class="topbar-actions">
+        <a th:href="@{/doctor/notifications}" class="notif-badge">
+          🔔
+          <span class="badge" th:if="${unread > 0}" th:text="${unread}"></span>
+        </a>
+        <a th:href="@{/doctor/schedule}" class="btn btn-primary btn-sm">+ Add Slots</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <p style="color:var(--text-mid);margin-bottom:1.5rem;">
+        Welcome, <strong th:text="${doctor.name}">Doctor</strong>
+        <span style="color:var(--accent);font-weight:600;" th:text="' · ' + ${doctor.specialization}"></span>
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon warning">⏳</div>
+          <div class="stat-info"><div class="label">Pending</div><div class="value" th:text="${pending}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon success">✅</div>
+          <div class="stat-info"><div class="label">Approved</div><div class="value" th:text="${approved}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal">🏁</div>
+          <div class="stat-info"><div class="label">Completed</div><div class="value" th:text="${completed}">0</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon accent">🔔</div>
+          <div class="stat-info"><div class="label">Unread</div><div class="value" th:text="${unread}">0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Pending &amp; Upcoming Appointments</h3>
+          <a th:href="@{/doctor/appointments}" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div th:if="${#lists.isEmpty(appointments)}" class="empty-state">
+            <div class="icon">📭</div>
+            <p>No pending appointments.</p>
+          </div>
+          <div class="table-wrap" th:if="${!#lists.isEmpty(appointments)}">
+            <table>
+              <thead><tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr th:each="a : ${appointments}">
+                  <td th:text="${a.appointmentId}">#</td>
+                  <td th:text="${a.patient.name}">Patient</td>
+                  <td th:text="${a.date}">Date</td>
+                  <td th:text="${a.time}">Time</td>
+                  <td style="font-size:0.85rem;" th:text="${a.reason}">Reason</td>
+                  <td><span th:class="'badge badge-' + ${a.status.name().toLowerCase()}" th:text="${a.status}"></span></td>
+                  <td>
+                    <div class="actions-group">
+                      <form th:if="${a.status.name() == 'PENDING'}"
+                            th:action="@{/doctor/appointments/{id}/approve(id=${a.appointmentId})}" method="post" style="display:inline;">
+                        <button class="btn btn-success btn-sm">✓ Approve</button>
+                      </form>
+                      <form th:if="${a.status.name() == 'PENDING'}"
+                            th:action="@{/doctor/appointments/{id}/reject(id=${a.appointmentId})}" method="post" style="display:inline;">
+                        <button class="btn btn-danger btn-sm">✕ Reject</button>
+                      </form>
+                      <form th:if="${a.status.name() == 'APPROVED'}"
+                            th:action="@{/doctor/appointments/{id}/complete(id=${a.appointmentId})}" method="post" style="display:inline;">
+                        <button class="btn btn-primary btn-sm">🏁 Complete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
