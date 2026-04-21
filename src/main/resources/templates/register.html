@@ -1,1 +1,110 @@
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — AppointCare</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="auth-wrap">
+
+  <div class="auth-panel auth-brand">
+    <div>
+      <div class="brand-logo">Appoint<span>Care</span></div>
+      <p class="brand-tagline">Join thousands of patients and doctors using AppointCare every day.</p>
+      <ul class="brand-features">
+        <li>Free patient registration</li>
+        <li>Doctor profiles &amp; specializations</li>
+        <li>Instant slot availability</li>
+        <li>Notifications via SMS &amp; email</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="auth-panel" style="background:#f7f9fb;overflow-y:auto;">
+    <div class="auth-form-box" style="max-width:480px;">
+      <h2>Create Account</h2>
+      <p class="sub">Fill in your details to get started</p>
+
+      <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+
+      <form th:action="@{/register}" method="post" th:object="${registerDto}">
+
+        <div class="form-group">
+          <label>I am a</label>
+          <select id="roleSelect" name="role" class="form-control" required>
+            <option value="">— Select Role —</option>
+            <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+          </select>
+        </div>
+
+        <!-- Common Fields -->
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" class="form-control" th:field="*{name}" placeholder="Your full name" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="phone" class="form-control" th:field="*{phone}" placeholder="10-digit mobile" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" name="email" class="form-control" th:field="*{email}" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" th:field="*{password}" placeholder="Min 6 characters" required/>
+        </div>
+
+        <!-- Doctor Fields -->
+        <div id="doctorFields" style="display:none;">
+          <hr style="border:none;border-top:1px solid var(--border);margin:0.75rem 0;"/>
+          <p style="font-size:0.8rem;font-weight:600;color:var(--teal-dark);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Doctor Details</p>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Specialization</label>
+              <input type="text" name="specialization" class="form-control" th:field="*{specialization}" placeholder="e.g. Cardiology"/>
+            </div>
+            <div class="form-group">
+              <label>Qualification</label>
+              <input type="text" name="qualification" class="form-control" th:field="*{qualification}" placeholder="e.g. MD, MBBS"/>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Hospital / Clinic</label>
+              <input type="text" name="hospital" class="form-control" th:field="*{hospital}" placeholder="Hospital name"/>
+            </div>
+            <div class="form-group">
+              <label>Consultation Fee (₹)</label>
+              <input type="number" name="consultationFee" class="form-control" th:field="*{consultationFee}" placeholder="e.g. 500"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Fields -->
+        <div id="adminFields" style="display:none;">
+          <hr style="border:none;border-top:1px solid var(--border);margin:0.75rem 0;"/>
+          <div class="form-group">
+            <label>Department</label>
+            <input type="text" name="department" class="form-control" th:field="*{department}" placeholder="e.g. Management"/>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:1.25rem;">
+          Create Account →
+        </button>
+      </form>
+
+      <p class="text-muted" style="text-align:center;margin-top:1.25rem;">
+        Already have an account? <a th:href="@{/login}">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
